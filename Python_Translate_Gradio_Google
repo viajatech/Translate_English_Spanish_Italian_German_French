@@ -1,0 +1,51 @@
+#Code  by David Ruiz a.k.a @viajatech
+#Código para traducir español,inglés,francés,alemán  usando Googletrans y Gradio por David Ruiz a.k.a @viajatech
+
+#pip install googletrans==3.1.0a0
+#pip install googletrans
+#pip install googletrans --upgrade
+#pip install gradio
+
+
+import gradio as gr
+from googletrans import Translator
+
+
+def traducir(texto, idioma_destino):
+    """
+    Traduce un texto a un idioma específico.
+
+    Args:
+        texto: El texto a traducir.
+        idioma_destino: El código de idioma de destino.
+
+    Returns:
+        La traducción del texto al idioma de destino.
+    """
+    try:
+        print(f"Idioma de destino: {idioma_destino}")
+        traductor = Translator()
+        traduccion = traductor.translate(texto, dest=idioma_destino)
+        return traduccion.text
+    except ValueError:
+        return "Error: Código de idioma inválido."
+    except Exception as e:
+        return f"Error al traducir: {e}"
+
+
+# Lista de idiomas disponibles
+idiomas = ["en", "es", "fr", "de", "it"]
+
+# Interfaz de usuario con Gradio
+with gr.Blocks() as interfaz:
+    with gr.Row():
+        campo_texto = gr.Textbox(label="Texto a traducir")
+        campo_idioma = gr.Dropdown(label="Idioma de destino", choices=idiomas)
+    boton_traducir = gr.Button("Traducir")
+    salida_traduccion = gr.Textbox(label="Traducción")
+
+    # Función que se ejecuta al hacer clic en el botón
+    boton_traducir.click(traducir, [campo_texto, campo_idioma], salida_traduccion)
+
+    # Inicia la interfaz
+    interfaz.launch()
